@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["maven", "jdk17"]
+
+[phases.build]
+cmds = ["cd main && mvn clean install -DskipTests"]
+
+[phases.deploy]
+cmds = ["cd main && java -Dspring.profiles.active=prod -Dserver.port=$PORT -jar target/main-0.0.1-SNAPSHOT.jar"]
+
+[start]
+cmd = "cd main && java -Dspring.profiles.active=prod -Dserver.port=$PORT -jar target/main-0.0.1-SNAPSHOT.jar"
