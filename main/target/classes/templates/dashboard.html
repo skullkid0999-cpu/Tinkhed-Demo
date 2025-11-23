@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: pageContent}">
+<head>
+    <title>Dashboard - Sistema de Gestión de Restaurante</title>
+</head>
+<body>
+    <div th:fragment="pageContent">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Dashboard
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total Pedidos
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" 
+                                     th:text="${estadisticas.totalPedidos} ?: 0">
+                                    0
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Ventas del Día
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${#numbers.formatDecimal(resumenVentas.ventasHoy, 1, 'COMMA', 2, 'POINT')} ?: '$0.00'">
+                                    $0.00
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Productos en Stock
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${estadisticas.productosActivos} ?: 0">
+                                    0
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Stock Bajo
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                     th:text="${estadisticas.productosStockBajo} ?: 0">
+                                    0
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row">
+            <!-- Order Status Distribution -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            Distribución de Pedidos por Estado
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <div class="row">
+                                <div class="col-md-6" th:each="entry : ${distribucionPedidos}">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-sm font-weight-bold" th:text="${entry.key}">Estado</span>
+                                        <span class="badge bg-primary" th:text="${entry.value}">0</span>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar" 
+                                             role="progressbar" 
+                                             th:style="'width: ' + (${entry.value} * 100 / ${estadisticas.totalPedidos}) + '%'"
+                                             th:attr="aria-valuenow=${entry.value}, aria-valuemin=0, aria-valuemax=${estadisticas.totalPedidos}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-bolt me-2"></i>
+                            Acciones Rápidas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/pedidos/nuevo" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                Nuevo Pedido
+                            </a>
+                            <a href="/inventario/nuevo" class="btn btn-success">
+                                <i class="fas fa-box me-2"></i>
+                                Agregar Producto
+                            </a>
+                            <a href="/pedidos?estado=PENDIENTE" class="btn btn-warning">
+                                <i class="fas fa-clock me-2"></i>
+                                Ver Pedidos Pendientes
+                            </a>
+                            <a href="/inventario/stock-bajo" class="btn btn-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Stock Bajo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <!-- Recent Orders -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Pedidos Recientes
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(pedidosRecientes)}" class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>No hay pedidos recientes</p>
+                        </div>
+                        <div th:each="pedido : ${pedidosRecientes}" class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="me-3">
+                                <div class="icon-circle bg-primary">
+                                    <i class="fas fa-file-alt text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500" th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</div>
+                                <strong th:text="${pedido.numeroPedido}">PED-001</strong><br>
+                                <span class="text-muted" th:text="${pedido.clienteNombre}">Cliente</span>
+                                <div class="small">
+                                    <span th:class="${'badge bg-' + 
+                                        (pedido.estado == 'PENDIENTE' ? 'warning' : 
+                                         pedido.estado == 'EN_PREPARACION' ? 'info' : 
+                                         pedido.estado == 'LISTO' ? 'success' : 
+                                         pedido.estado == 'ENTREGADO' ? 'secondary' : 'danger')}"
+                                          th:text="${pedido.estado}">Estado</span>
+                                    <span class="ms-2 fw-bold" th:text="${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="/pedidos" class="btn btn-sm btn-primary">Ver todos los pedidos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Stock Products -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Productos con Stock Bajo
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(productosStockBajo)}" class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                            <p>Todos los productos tienen stock suficiente</p>
+                        </div>
+                        <div th:each="producto : ${productosStockBajo}" class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="me-3">
+                                <div class="icon-circle bg-warning">
+                                    <i class="fas fa-box text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="small text-gray-500" th:text="${producto.categoria}">Categoría</div>
+                                <strong th:text="${producto.nombre}">Producto</strong><br>
+                                <span class="text-muted">Stock actual: </span>
+                                <span class="fw-bold text-danger" th:text="${producto.stock}">0</span>
+                                <span class="text-muted"> / Mínimo: </span>
+                                <span th:text="${producto.stockMinimo}">5</span>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="/inventario/stock-bajo" class="btn btn-sm btn-warning">Gestionar inventario</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Summary -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Resumen de Ventas de Hoy
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="mb-2">
+                                    <i class="fas fa-dollar-sign fa-2x text-success"></i>
+                                </div>
+                                <h4 class="font-weight-bold text-success"
+                                    th:text="${#numbers.formatDecimal(resumenVentas.ventasHoy, 1, 'COMMA', 2, 'POINT')} ?: '$0.00'">
+                                    $0.00
+                                </h4>
+                                <p class="text-muted mb-0">Ventas Totales</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-2">
+                                    <i class="fas fa-shopping-cart fa-2x text-primary"></i>
+                                </div>
+                                <h4 class="font-weight-bold text-primary"
+                                    th:text="${resumenVentas.pedidosHoy} ?: 0">
+                                    0
+                                </h4>
+                                <p class="text-muted mb-0">Pedidos</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-2">
+                                    <i class="fas fa-calculator fa-2x text-info"></i>
+                                </div>
+                                <h4 class="font-weight-bold text-info"
+                                    th:text="${#numbers.formatDecimal(resumenVentas.ticketPromedio, 1, 'COMMA', 2, 'POINT')} ?: '$0.00'">
+                                    $0.00
+                                </h4>
+                                <p class="text-muted mb-0">Ticket Promedio</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-2">
+                                    <i class="fas fa-percentage fa-2x text-warning"></i>
+                                </div>
+                                <h4 class="font-weight-bold text-warning"
+                                    th:text="${estadisticas.pedidosPendientes} ?: 0">
+                                    0
+                                </h4>
+                                <p class="text-muted mb-0">Pedidos Pendientes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

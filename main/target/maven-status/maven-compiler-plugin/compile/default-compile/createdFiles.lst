@@ -1,0 +1,14 @@
+com\tinkhecdemo\main\MainApplication.class
+com\tinkhecdemo\main\model\Pedido$Estado.class
+com\tinkhecdemo\main\model\PedidoItem.class
+com\tinkhecdemo\main\model\Producto.class
+com\tinkhecdemo\main\service\PedidoService.class
+com\tinkhecdemo\main\controller\GlobalControllerAdvice.class
+com\tinkhecdemo\main\model\Pedido.class
+com\tinkhecdemo\main\service\DashboardService.class
+com\tinkhecdemo\main\controller\InventarioController.class
+com\tinkhecdemo\main\controller\AuthController.class
+com\tinkhecdemo\main\controller\DashboardController.class
+com\tinkhecdemo\main\service\UsuarioService.class
+com\tinkhecdemo\main\model\Usuario.class
+com\tinkhecdemo\main\service\ProductoService.class

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout_tailwind :: layout(~{::content})}">
+
+<head>
+    <title>Nuevo Producto</title>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <div class="max-w-3xl mx-auto">
+            <div class="flex items-center gap-4 py-4">
+                <a href="/inventario/dashboard-css"
+                    class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-white/70 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
+                    Nuevo Producto
+                </h1>
+            </div>
+
+            <div class="bg-white dark:bg-[#192233] rounded-xl border border-slate-200 dark:border-[#324467] p-6">
+                <form th:action="@{/inventario/nuevo-css}" method="post" th:object="${producto}"
+                    class="flex flex-col gap-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nombre -->
+                        <div class="flex flex-col gap-2">
+                            <label for="nombre"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Nombre del Producto <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="nombre" th:field="*{nombre}" required
+                                class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 focus:border-primary focus:ring-primary"
+                                placeholder="Ej: Hamburguesa Doble" />
+                            <div class="text-red-500 text-xs" th:if="${#fields.hasErrors('nombre')}"
+                                th:errors="*{nombre}"></div>
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="flex flex-col gap-2">
+                            <label for="categoria"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Categoría <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <select id="categoria" th:field="*{categoria}" required
+                                    class="h-10 w-full appearance-none rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 pr-10 focus:border-primary focus:ring-primary">
+                                    <option value="">Seleccionar categoría...</option>
+                                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">
+                                        Categoría
+                                    </option>
+                                    <option value="Comida">Comida</option>
+                                    <option value="Bebidas">Bebidas</option>
+                                    <option value="Postres">Postres</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                                    expand_more
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Precio -->
+                        <div class="flex flex-col gap-2">
+                            <label for="precio"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Precio <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <input type="number" id="precio" th:field="*{precio}" required step="0.01" min="0"
+                                    class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white pl-8 pr-4 focus:border-primary focus:ring-primary w-full"
+                                    placeholder="0.00" />
+                            </div>
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="flex flex-col gap-2">
+                            <label for="stock"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Stock Inicial <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="stock" th:field="*{stock}" required min="0"
+                                class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 focus:border-primary focus:ring-primary"
+                                placeholder="0" />
+                        </div>
+
+                        <!-- Stock Mínimo -->
+                        <div class="flex flex-col gap-2">
+                            <label for="stockMinimo"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Stock Mínimo
+                            </label>
+                            <input type="number" id="stockMinimo" th:field="*{stockMinimo}" min="0"
+                                class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 focus:border-primary focus:ring-primary"
+                                placeholder="5" />
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="flex flex-col gap-2">
+                        <label for="descripcion"
+                            class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                            Descripción
+                        </label>
+                        <textarea id="descripcion" th:field="*{descripcion}" rows="3"
+                            class="rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white p-4 focus:border-primary focus:ring-primary resize-none"
+                            placeholder="Detalles del producto..."></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div
+                        class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-[#324467]">
+                        <a href="/inventario/dashboard-css"
+                            class="px-4 py-2 rounded-lg text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 font-medium transition-colors">
+                            Cancelar
+                        </a>
+                        <button type="submit"
+                            class="px-6 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined">save</span>
+                            Guardar Producto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

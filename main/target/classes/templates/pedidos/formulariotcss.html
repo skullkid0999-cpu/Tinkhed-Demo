@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout_tailwind :: layout(~{::content})}">
+
+<head>
+    <title>Nuevo Pedido</title>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <div class="max-w-3xl mx-auto">
+            <div class="flex items-center gap-4 py-4">
+                <a href="/pedidos/dashboard-css"
+                    class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-white/70 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
+                    Nuevo Pedido
+                </h1>
+            </div>
+
+            <div class="bg-white dark:bg-[#192233] rounded-xl border border-slate-200 dark:border-[#324467] p-6">
+                <form th:action="@{/pedidos/nuevo-css}" method="post" th:object="${pedido}" class="flex flex-col gap-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Cliente Nombre -->
+                        <div class="flex flex-col gap-2">
+                            <label for="clienteNombre"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Nombre del Cliente <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="clienteNombre" th:field="*{clienteNombre}" required
+                                class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 focus:border-primary focus:ring-primary"
+                                placeholder="Ej: Juan Pérez" />
+                            <div class="text-red-500 text-xs" th:if="${#fields.hasErrors('clienteNombre')}"
+                                th:errors="*{clienteNombre}"></div>
+                        </div>
+
+                        <!-- Cliente Teléfono -->
+                        <div class="flex flex-col gap-2">
+                            <label for="clienteTelefono"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Teléfono
+                            </label>
+                            <input type="tel" id="clienteTelefono" th:field="*{clienteTelefono}"
+                                class="h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 focus:border-primary focus:ring-primary"
+                                placeholder="Ej: +56 9 1234 5678" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Estado -->
+                        <div class="flex flex-col gap-2">
+                            <label for="estado"
+                                class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                                Estado Inicial
+                            </label>
+                            <div class="relative">
+                                <select id="estado" th:field="*{estado}"
+                                    class="h-10 w-full appearance-none rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-4 pr-10 focus:border-primary focus:ring-primary">
+                                    <option th:each="estado : ${estados}" th:value="${estado.name()}"
+                                        th:text="${estado.name()}">
+                                        PENDIENTE
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                                    expand_more
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Productos -->
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-slate-900 dark:text-white text-lg font-bold">Productos</h3>
+                            <button type="button" onclick="agregarProducto()"
+                                class="text-primary hover:text-primary/80 text-sm font-medium flex items-center gap-1">
+                                <span class="material-symbols-outlined text-lg">add</span>
+                                Agregar Producto
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 dark:border-[#324467]">
+                                        <th class="py-3 px-4 text-slate-500 dark:text-slate-400 text-sm font-medium">
+                                            Producto</th>
+                                        <th
+                                            class="py-3 px-4 text-slate-500 dark:text-slate-400 text-sm font-medium w-32">
+                                            Precio</th>
+                                        <th
+                                            class="py-3 px-4 text-slate-500 dark:text-slate-400 text-sm font-medium w-24">
+                                            Cantidad</th>
+                                        <th
+                                            class="py-3 px-4 text-slate-500 dark:text-slate-400 text-sm font-medium w-32">
+                                            Subtotal</th>
+                                        <th class="py-3 px-4 w-10"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productos-container">
+                                    <tr th:each="item, itemStat : *{items}"
+                                        class="border-b border-slate-100 dark:border-[#324467]/50">
+                                        <td class="p-2">
+                                            <select th:field="*{items[__${itemStat.index}__].productoId}"
+                                                onchange="actualizarPrecio(this)"
+                                                class="w-full h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-3 focus:border-primary focus:ring-primary producto-select">
+                                                <option value="">Seleccionar producto...</option>
+                                                <option th:each="prod : ${productos}" th:value="${prod.id}"
+                                                    th:text="${prod.nombre}" th:data-precio="${prod.precio}">
+                                                    Producto
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td class="p-2">
+                                            <input type="number" th:field="*{items[__${itemStat.index}__].precio}"
+                                                readonly
+                                                class="w-full h-10 rounded-lg bg-slate-5 dark:bg-[#192233] border border-slate-200 dark:border-none text-slate-500 dark:text-slate-400 px-3 precio-input" />
+                                        </td>
+                                        <td class="p-2">
+                                            <input type="number" th:field="*{items[__${itemStat.index}__].cantidad}"
+                                                min="1" value="1" onchange="calcularSubtotal(this)"
+                                                onkeyup="calcularSubtotal(this)"
+                                                class="w-full h-10 rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white px-3 focus:border-primary focus:ring-primary cantidad-input" />
+                                        </td>
+                                        <td class="p-2">
+                                            <span
+                                                class="text-slate-900 dark:text-white font-medium subtotal-display">$0</span>
+                                        </td>
+                                        <td class="p-2 text-center">
+                                            <button type="button" onclick="eliminarFila(this)"
+                                                class="text-red-500 hover:text-red-600 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                                <span class="material-symbols-outlined text-xl">delete</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"
+                                            class="py-4 px-4 text-right text-slate-500 dark:text-slate-400 font-medium">
+                                            Total:</td>
+                                        <td class="py-4 px-4 text-slate-900 dark:text-white font-bold text-lg"
+                                            id="total-pedido">$0</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="flex flex-col gap-2">
+                        <label for="observaciones"
+                            class="text-slate-700 dark:text-white text-sm font-medium leading-normal">
+                            Observaciones
+                        </label>
+                        <textarea id="observaciones" th:field="*{observaciones}" rows="3"
+                            class="rounded-lg bg-white dark:bg-[#232f48] border border-slate-300 dark:border-none text-slate-900 dark:text-white p-4 focus:border-primary focus:ring-primary resize-none"
+                            placeholder="Instrucciones especiales, alergias, etc."></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div
+                        class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200 dark:border-[#324467]">
+                        <a href="/pedidos/dashboard-css"
+                            class="px-4 py-2 rounded-lg text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 font-medium transition-colors">
+                            Cancelar
+                        </a>
+                        <button type="submit"
+                            class="px-6 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined">save</span>
+                            Crear Pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            function actualizarPrecio(selectElement) {
+                const row = selectElement.closest('tr');
+                const precioInput = row.querySelector('.precio-input');
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const precio = selectedOption.getAttribute('data-precio');
+
+                if (precio) {
+                    precioInput.value = precio;
+                    calcularSubtotal(row.querySelector('.cantidad-input'));
+                } else {
+                    precioInput.value = '';
+                    row.querySelector('.subtotal-display').textContent = '$0';
+                    calcularTotal();
+                }
+            }
+
+            function calcularSubtotal(inputElement) {
+                const row = inputElement.closest('tr');
+                const precio = parseFloat(row.querySelector('.precio-input').value) || 0;
+                const cantidad = parseInt(inputElement.value) || 0;
+                const subtotal = precio * cantidad;
+
+                row.querySelector('.subtotal-display').textContent = '$' + subtotal.toFixed(0);
+                calcularTotal();
+            }
+
+            function calcularTotal() {
+                let total = 0;
+                document.querySelectorAll('#productos-container tr').forEach(row => {
+                    const precio = parseFloat(row.querySelector('.precio-input').value) || 0;
+                    const cantidad = parseInt(row.querySelector('.cantidad-input').value) || 0;
+                    total += precio * cantidad;
+                });
+                document.getElementById('total-pedido').textContent = '$' + total.toFixed(0);
+            }
+
+            function eliminarFila(btn) {
+                const row = btn.closest('tr');
+                if (document.querySelectorAll('#productos-container tr').length > 1) {
+                    row.remove();
+                    calcularTotal();
+                    reindexarFilas();
+                } else {
+                    // Si es la última fila, solo limpiar valores
+                    row.querySelector('select').value = '';
+                    row.querySelector('.precio-input').value = '';
+                    row.querySelector('.cantidad-input').value = 1;
+                    row.querySelector('.subtotal-display').textContent = '$0';
+                    calcularTotal();
+                }
+            }
+
+            function agregarProducto() {
+                const container = document.getElementById('productos-container');
+                const firstRow = container.querySelector('tr');
+                const newRow = firstRow.cloneNode(true);
+
+                // Limpiar valores
+                newRow.querySelector('select').value = '';
+                newRow.querySelector('.precio-input').value = '';
+                newRow.querySelector('.cantidad-input').value = 1;
+                newRow.querySelector('.subtotal-display').textContent = '$0';
+
+                container.appendChild(newRow);
+                reindexarFilas();
+            }
+
+            function reindexarFilas() {
+                const rows = document.querySelectorAll('#productos-container tr');
+                rows.forEach((row, index) => {
+                    row.querySelector('select').name = `items[${index}].productoId`;
+                    row.querySelector('select').id = `items${index}.productoId`;
+                    row.querySelector('.precio-input').name = `items[${index}].precio`;
+                    row.querySelector('.precio-input').id = `items${index}.precio`;
+                    row.querySelector('.cantidad-input').name = `items[${index}].cantidad`;
+                    row.querySelector('.cantidad-input').id = `items${index}.cantidad`;
+                });
+            }
+        </script>
+    </div>
+
+
+</body>
+
+</html>

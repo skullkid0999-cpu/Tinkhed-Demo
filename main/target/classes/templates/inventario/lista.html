@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="layout :: *">
+<head>
+    <title>Gestión de Inventario - Sistema de Gestión de Restaurante</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="fas fa-boxes me-2"></i>
+                Gestión de Inventario
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/inventario/nuevo" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Nuevo Producto
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts for Stock -->
+        <div th:if="${!#lists.isEmpty(productosStockBajo)}" class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>¡Atención!</strong> Hay <span th:text="${#lists.size(productosStockBajo)}">0</span> productos con stock bajo.
+            <a href="/inventario/stock-bajo" class="alert-link">Ver productos</a>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Filtrar por Categoría:</label>
+                        <select class="form-select" onchange="filtrarPorCategoria(this.value)">
+                            <option value="">Todas las categorías</option>
+                            <option th:each="categoria : ${categorias}" 
+                                    th:value="${categoria}" 
+                                    th:text="${categoria}"
+                                    th:selected="${categoriaFiltro == categoria}">Categoría</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Estado:</label>
+                        <select class="form-select" onchange="filtrarPorEstado(this.value)">
+                            <option value="">Todos</option>
+                            <option value="activo" th:selected="${filtroActivo == 'activo'}">Activos</option>
+                            <option value="inactivo" th:selected="${filtroActivo == 'inactivo'}">Inactivos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Stock:</label>
+                        <select class="form-select" onchange="filtrarPorStock(this.value)">
+                            <option value="">Todos</option>
+                            <option value="bajo" th:selected="${filtroStockBajo}">Stock Bajo</option>
+                            <option value="normal">Stock Normal</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                            <i class="fas fa-times me-1"></i>
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-list me-2"></i>
+                    Lista de Productos
+                    <span class="badge bg-primary ms-2" th:text="${#lists.size(productos)}">0</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(productos)}" class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-4x mb-3"></i>
+                    <h5>No hay productos registrados</h5>
+                    <p>Comience agregando su primer producto</p>
+                    <a href="/inventario/nuevo" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Agregar Producto
+                    </a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(productos)}" class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="producto : ${productos}" th:class="${producto.necesitaReposicion()} ? 'table-warning'">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <div class="icon-circle bg-primary">
+                                                <i class="fas fa-box text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <strong th:text="${producto.nombre}">Producto</strong>
+                                            <br>
+                                            <small class="text-muted" th:text="${producto.descripcion}">Descripción</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${producto.categoria}">Categoría</span>
+                                </td>
+                                <td>
+                                    <strong th:text="${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$0.00</strong>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span th:text="${producto.stock}" class="me-2">0</span>
+                                        <div th:if="${producto.necesitaReposicion()}" class="text-warning">
+                                            <i class="fas fa-exclamation-triangle" title="Stock bajo"></i>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Mín: <span th:text="${producto.stockMinimo}">5</span></small>
+                                </td>
+                                <td>
+                                    <span th:class="${producto.activo} ? 'badge bg-success' : 'badge bg-danger'"
+                                          th:text="${producto.activo} ? 'Activo' : 'Inactivo'">Estado</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/inventario/{id}(id=${producto.id})}" 
+                                           class="btn btn-sm btn-outline-primary btn-action" 
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/inventario/{id}/editar(id=${producto.id})}" 
+                                           class="btn btn-sm btn-outline-secondary btn-action" 
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger btn-action" 
+                                                th:onclick="'eliminarProducto(' + ${producto.id} + ')'"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:fragment="scripts">
+        function filtrarPorCategoria(categoria) {
+            if (categoria) {
+                window.location.href = '/inventario/categoria/' + encodeURIComponent(categoria);
+            } else {
+                window.location.href = '/inventario';
+            }
+        }
+
+        function filtrarPorEstado(estado) {
+            // Implementar filtrado por estado si es necesario
+            console.log('Filtrar por estado:', estado);
+        }
+
+        function filtrarPorStock(filtro) {
+            if (filtro === 'bajo') {
+                window.location.href = '/inventario/stock-bajo';
+            } else {
+                window.location.href = '/inventario';
+            }
+        }
+
+        function limpiarFiltros() {
+            window.location.href = '/inventario';
+        }
+
+        function eliminarProducto(id) {
+            if (confirm('¿Está seguro de que desea eliminar este producto?')) {
+                fetch('/inventario/' + id + '/eliminar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar el producto');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

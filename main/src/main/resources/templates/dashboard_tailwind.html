@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout_tailwind :: layout(~{::content})}">
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+                class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+                <p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Ventas del Día</p>
+                <p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight"
+                    th:text="${#numbers.formatDecimal(resumenVentas.ventasHoy, 1, 'COMMA', 2, 'POINT')} ?: '$0.00'">
+                    $1,250.75</p>
+                <p class="text-green-500 text-base font-medium leading-normal">
+                    <span class="material-symbols-outlined text-sm align-middle">trending_up</span>
+                    Hoy
+                </p>
+            </div>
+            <div
+                class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+                <p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Pedidos Activos</p>
+                <p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight"
+                    th:text="${estadisticas.pedidosPendientes + estadisticas.pedidosEnPreparacion} ?: 0">12</p>
+                <p class="text-slate-500 text-base font-medium leading-normal">Pendientes + En Prep.</p>
+            </div>
+            <div
+                class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+                <p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Total Pedidos Hoy</p>
+                <p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight"
+                    th:text="${resumenVentas.pedidosHoy} ?: 0">12</p>
+                <p class="text-slate-500 text-base font-medium leading-normal">Pedidos realizados</p>
+            </div>
+            <a href="/pedidos/nuevo-css"
+                class="flex flex-1 items-center justify-center rounded-xl bg-primary hover:bg-primary/90 p-6 border border-primary/20 cursor-pointer transition-colors">
+                <div class="flex flex-col items-center gap-2 text-white">
+                    <span class="material-symbols-outlined text-3xl">add_circle</span>
+                    <p class="text-base font-semibold">Nuevo Pedido</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
+            <!-- Main section with charts and tables -->
+            <div class="lg:col-span-3 flex flex-col gap-6">
+                <!-- Charts (Placeholder for now as we don't have hourly data) -->
+                <div
+                    class="flex min-w-72 flex-1 flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233]">
+                    <p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Resumen de Ventas
+                    </p>
+                    <div class="flex items-baseline gap-2">
+                        <p class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight truncate"
+                            th:text="${#numbers.formatDecimal(resumenVentas.ventasHoy, 1, 'COMMA', 2, 'POINT')} ?: '$0.00'">
+                            $1,250.75</p>
+                        <div class="flex gap-1">
+                            <p class="text-slate-500 dark:text-[#92a4c9] text-base font-normal leading-normal">Hoy
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Visual placeholder for chart -->
+                    <div
+                        class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3 pt-4 opacity-50">
+                        <div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 70%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            10am</p>
+                        <div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 40%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            11am</p>
+                        <div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 70%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            12pm</p>
+                        <div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 40%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            1pm</p>
+                        <div class="bg-primary dark:bg-primary w-full rounded-t-md" style="height: 100%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            2pm</p>
+                        <div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 60%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            3pm</p>
+                        <div class="bg-primary dark:bg-primary w-full rounded-t-md" style="height: 100%;"></div>
+                        <p
+                            class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">
+                            4pm</p>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div
+                    class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233]">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-slate-700 dark:text-white text-base font-medium leading-normal">Últimos
+                            Pedidos
+                        </h3>
+                        <a href="/pedidos/dashboard-css" class="text-primary text-sm font-bold hover:underline">Ver
+                            Todos</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-slate-200 dark:border-b-[#324467]">
+                                    <th
+                                        class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">
+                                        ID Pedido</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">
+                                        Cliente</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">
+                                        Estado</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">
+                                        Total</th>
+                                    <th
+                                        class="px-4 py-3 text-left text-slate-500 dark:text-[#92a4c9] text-sm font-medium leading-normal">
+                                        Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(pedidosRecientes)}">
+                                    <td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay pedidos
+                                        recientes</td>
+                                </tr>
+                                <tr th:each="pedido : ${pedidosRecientes}"
+                                    class="border-b border-slate-200 dark:border-b-[#324467] last:border-0">
+                                    <td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal"
+                                        th:text="${pedido.numeroPedido}">#86754</td>
+                                    <td class="h-[72px] px-4 py-2 text-slate-800 dark:text-white text-sm font-normal leading-normal"
+                                        th:text="${pedido.clienteNombre}">Ana Torres</td>
+                                    <td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+                                        <span
+                                            class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+                                            th:classappend="${pedido.estado == 'PENDIENTE' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400' : 
+                                                               (pedido.estado == 'EN_PREPARACION' ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400' : 
+                                                               (pedido.estado == 'LISTO' ? 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400' : 
+                                                               (pedido.estado == 'ENTREGADO' ? 'bg-slate-100 text-slate-800 dark:bg-slate-500/20 dark:text-slate-400' : 
+                                                               'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400')))}"
+                                            th:text="${pedido.estado}">En Preparación</span>
+                                    </td>
+                                    <td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal"
+                                        th:text="${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}">
+                                        $25.50
+                                    </td>
+                                    <td
+                                        class="h-[72px] px-4 py-2 text-primary dark:text-primary text-sm font-bold leading-normal tracking-[0.015em] cursor-pointer hover:underline">
+                                        <a th:href="@{/pedidos/detalle-css/{id}(id=${pedido.id})}">Ver Detalle</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right sidebar/column for inventory -->
+            <div
+                class="lg:col-span-2 flex flex-col gap-6 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233] h-fit">
+                <h3 class="text-slate-700 dark:text-white text-base font-medium leading-normal">Inventario Bajo</h3>
+                <div class="flex flex-col gap-4">
+                    <div th:if="${#lists.isEmpty(productosStockBajo)}" class="text-center text-slate-500 py-4">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-500">check_circle</span>
+                        <p>Todo en orden</p>
+                    </div>
+                    <div th:each="prod : ${productosStockBajo}"
+                        class="flex items-center gap-4 p-3 rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-900/30">
+                        <div class="bg-red-100 dark:bg-red-900/30 p-2 rounded-lg text-red-600 dark:text-red-400">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-slate-900 dark:text-white font-medium truncate" th:text="${prod.nombre}">
+                                Producto</p>
+                            <p class="text-red-600 dark:text-red-400 text-sm">
+                                Stock: <span th:text="${prod.stock}" class="font-bold">5</span>
+                                <span class="text-slate-400 mx-1">|</span>
+                                Min: <span th:text="${prod.stockMinimo}">10</span>
+                            </p>
+                        </div>
+                        <a th:href="@{/inventario/{id}/editar-css(id=${prod.id})}"
+                            class="text-slate-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">edit</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

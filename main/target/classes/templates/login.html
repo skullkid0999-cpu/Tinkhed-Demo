@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="dark" lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Inicio de Sesión - Sistema de Restaurante</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-display">
+    <div
+        class="relative flex h-screen w-full flex-col items-center justify-center dark group/design-root overflow-hidden">
+        <div class="absolute inset-0">
+            <img alt="Fondo de ambiente de comida rápida" class="h-full w-full object-cover saturate-50 brightness-75"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZnIVoHondsqP96MZWEBJ_0lrnYBOnr33pHu-_urxseQVj0vBqJaHmhf2wzetomfXWUUhAAspHMC9En-NsOL5AQmL3wQXW2i1Q8EZtSIHUX0EQt5gf8EPUjZgYXqB1if0y2bgH1Fh7IKI3-mj1Px9AdDsRs3dLSyOWf4WtMUAFdLg9MvdeaaJw5vyZmab6U_bvTriU8uBQKXhk6pKKB5DM1tUfdLNIySQ-XAiJhHWhJOk9wDwQgij-DlaAjlhUvlI0emTo0X1AJXS" />
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0A192F]/80 to-[#1A3A6D]/80"></div>
+        </div>
+        <div
+            class="relative z-10 flex w-full max-w-md flex-col items-center rounded-xl bg-[#101622]/50 p-8 shadow-2xl backdrop-blur-lg">
+            <div class="mb-6 flex flex-col items-center">
+                <img src="/images/LogoTinkhecdr.svg" alt="Logo Tinkhec"
+                    class="h-24 w-auto mb-4 transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">
+                <h1 class="text-white tracking-tight text-3xl font-bold leading-tight text-center">Bienvenido de nuevo
+                </h1>
+                <p class="text-slate-400 mt-2 text-center">Acceso al Sistema de Gestión</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${param.error}" class="w-full mb-4 p-4 rounded-lg bg-red-500/20 border border-red-500/50">
+                <div class="flex items-center">
+                    <span class="material-symbols-outlined text-red-400 mr-2">error</span>
+                    <p class="text-red-300 text-sm">Credenciales inválidas. Por favor, verifique su usuario y
+                        contraseña.</p>
+                </div>
+            </div>
+
+            <div th:if="${param.logout}" class="w-full mb-4 p-4 rounded-lg bg-blue-500/20 border border-blue-500/50">
+                <div class="flex items-center">
+                    <span class="material-symbols-outlined text-blue-400 mr-2">info</span>
+                    <p class="text-blue-300 text-sm">Ha cerrado sesión exitosamente.</p>
+                </div>
+            </div>
+
+            <div th:if="${error}" class="w-full mb-4 p-4 rounded-lg bg-red-500/20 border border-red-500/50">
+                <div class="flex items-center">
+                    <span class="material-symbols-outlined text-red-400 mr-2">error</span>
+                    <p class="text-red-300 text-sm" th:text="${error}">Ha ocurrido un error</p>
+                </div>
+            </div>
+
+            <div class="w-full">
+                <form th:action="@{/login}" method="post" th:object="${usuario}" class="flex flex-col gap-4">
+                    <div class="flex w-full flex-wrap items-end">
+                        <label class="flex flex-col w-full flex-1">
+                            <p class="text-slate-300 text-sm font-medium leading-normal pb-2">ID de Empleado</p>
+                            <div class="relative flex w-full flex-1 items-stretch">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-700 bg-slate-800/60 focus:border-primary h-12 placeholder:text-slate-500 pl-12 pr-4 py-2 text-base font-normal leading-normal transition-colors"
+                                    placeholder="Ingrese su ID de empleado" th:field="*{username}"
+                                    th:classappend="${#fields.hasErrors('username')} ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50' : ''"
+                                    required />
+                            </div>
+                            <div th:if="${#fields.hasErrors('username')}" class="mt-1 text-red-400 text-sm"
+                                th:errors="*{username}"></div>
+                        </label>
+                    </div>
+                    <div class="flex w-full flex-wrap items-end">
+                        <label class="flex flex-col w-full flex-1">
+                            <p class="text-slate-300 text-sm font-medium leading-normal pb-2">Contraseña</p>
+                            <div class="relative flex w-full flex-1 items-stretch">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                                <input
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-200 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-700 bg-slate-800/60 focus:border-primary h-12 placeholder:text-slate-500 pl-12 pr-12 py-2 text-base font-normal leading-normal transition-colors"
+                                    placeholder="Ingrese su contraseña" type="password" th:field="*{password}"
+                                    th:classappend="${#fields.hasErrors('password')} ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50' : ''"
+                                    id="passwordInput" required />
+                                <button aria-label="Mostrar u ocultar contraseña"
+                                    class="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-slate-400 hover:text-primary transition-colors"
+                                    type="button" onclick="togglePassword()">
+                                    <span class="material-symbols-outlined" id="passwordIcon">visibility</span>
+                                </button>
+                            </div>
+                            <div th:if="${#fields.hasErrors('password')}" class="mt-1 text-red-400 text-sm"
+                                th:errors="*{password}"></div>
+                        </label>
+                    </div>
+                    <div class="flex pt-4">
+                        <button
+                            class="flex min-w-[84px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#101622] transition-all">
+                            <span class="truncate">Ingresar</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Demo Credentials -->
+            <div class="mt-6 w-full p-4 rounded-lg bg-slate-800/30 border border-slate-700">
+                <h6 class="text-slate-300 text-sm font-medium mb-3 flex items-center">
+                    <span class="material-symbols-outlined mr-2">info</span>
+                    Credenciales de Demostración:
+                </h6>
+                <div class="grid grid-cols-1 gap-3 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Administrador:</span>
+                        <code class="bg-slate-700 px-2 py-1 rounded text-slate-200">admin / admin123</code>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Mesero:</span>
+                        <code class="bg-slate-700 px-2 py-1 rounded text-slate-200">mesero / mesero123</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordIcon = document.getElementById('passwordIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.textContent = 'visibility';
+            }
+        }
+
+        // Auto-focus en el primer campo al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            const usernameField = document.querySelector('input[th\\:field="*{username}"]');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>

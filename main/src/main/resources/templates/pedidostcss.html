@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout_tailwind :: layout(~{::content})}">
+
+<head>
+    <title>Gestión de Pedidos - Tinkhec</title>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+                <div class="flex min-w-72 flex-col gap-1">
+                    <p class="text-slate-900 dark:text-white text-3xl font-bold leading-tight tracking-[-0.03em]">
+                        Gestión de Pedidos en Tiempo Real</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">Sucursal
+                        Principal</p>
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label class="flex flex-col min-w-40 h-11 w-full sm:w-72">
+                        <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+                            <div
+                                class="text-slate-400 dark:text-slate-500 flex bg-white dark:bg-slate-800 items-center justify-center pl-3.5 rounded-l-lg border-r-0">
+                                <span class="material-symbols-outlined text-2xl">search</span>
+                            </div>
+                            <input
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border-0 bg-white dark:bg-slate-800 h-full placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 pl-2 text-sm font-normal leading-normal"
+                                placeholder="Buscar por N° de pedido o cliente" value="" />
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Columna Nuevos -->
+                <div class="flex flex-col gap-4">
+                    <h2
+                        class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] px-2 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Nuevos (<span th:text="${nuevos.size()}">0</span>)
+                    </h2>
+                    <div class="flex flex-col gap-4">
+                        <div th:each="p : ${nuevos}"
+                            class="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-slate-800/50 shadow-sm border border-primary/50 dark:border-primary/40">
+                            <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-3 p-4">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]"
+                                        th:text="'Pedido #' + ${p.numeroPedido}">Pedido #1024</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal"
+                                        th:text="${#temporals.format(p.fechaCreacion, 'HH:mm')}">00:35</p>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <p class="text-slate-600 dark:text-slate-300 text-base font-normal leading-normal"
+                                        th:text="${p.clienteNombre}">Ana Gómez - Para llevar</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        <span th:each="item, iterStat : ${p.items}">
+                                            <span
+                                                th:text="${item.cantidad} + 'x ' + ${item.productoNombre}"></span><span
+                                                th:if="${!iterStat.last}">, </span>
+                                        </span>
+                                        <span th:if="${p.observaciones != null and !p.observaciones.isEmpty()}"
+                                            th:text="' Nota: ' + ${p.observaciones}"></span>
+                                    </p>
+                                </div>
+                                <form th:action="@{/pedidos/{id}/cambiar-estado(id=${p.id})}" method="post">
+                                    <input type="hidden" name="estado" value="EN_PREPARACION" />
+                                    <button type="submit"
+                                        class="flex w-full mt-2 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal hover:bg-primary/90 transition-colors">
+                                        <span class="truncate">Empezar Preparación</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Columna En Preparación -->
+                <div class="flex flex-col gap-4">
+                    <h2
+                        class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] px-2 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        En Preparación (<span th:text="${preparacion.size()}">0</span>)
+                    </h2>
+                    <div class="flex flex-col gap-4">
+                        <div th:each="p : ${preparacion}"
+                            class="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-slate-800/50 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-3 p-4">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]"
+                                        th:text="'Pedido #' + ${p.numeroPedido}">Pedido #1022</p>
+                                    <p class="text-amber-600 dark:text-amber-500 text-sm font-medium leading-normal"
+                                        th:text="${#temporals.format(p.fechaCreacion, 'HH:mm')}">05:48</p>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <p class="text-slate-600 dark:text-slate-300 text-base font-normal leading-normal"
+                                        th:text="${p.clienteNombre}">Luisa F. - Para llevar</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        <span th:each="item, iterStat : ${p.items}">
+                                            <span
+                                                th:text="${item.cantidad} + 'x ' + ${item.productoNombre}"></span><span
+                                                th:if="${!iterStat.last}">, </span>
+                                        </span>
+                                    </p>
+                                </div>
+                                <form th:action="@{/pedidos/{id}/cambiar-estado(id=${p.id})}" method="post">
+                                    <input type="hidden" name="estado" value="LISTO" />
+                                    <button type="submit"
+                                        class="flex w-full mt-2 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-amber-500 text-white text-sm font-bold leading-normal hover:bg-amber-600 transition-colors">
+                                        <span class="truncate">Marcar como Listo</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Columna Listos para Recoger -->
+                <div class="flex flex-col gap-4">
+                    <h2
+                        class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] px-2 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        Listos para Recoger (<span th:text="${listos.size()}">0</span>)
+                    </h2>
+                    <div class="flex flex-col gap-4">
+                        <div th:each="p : ${listos}"
+                            class="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-slate-800/50 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-3 p-4">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]"
+                                        th:text="'Pedido #' + ${p.numeroPedido}">Pedido #1021</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal"
+                                        th:text="${#temporals.format(p.fechaCreacion, 'HH:mm')}">10:15</p>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <p class="text-slate-600 dark:text-slate-300 text-base font-normal leading-normal"
+                                        th:text="${p.clienteNombre}">Delivery App - #D456</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        <span th:each="item, iterStat : ${p.items}">
+                                            <span
+                                                th:text="${item.cantidad} + 'x ' + ${item.productoNombre}"></span><span
+                                                th:if="${!iterStat.last}">, </span>
+                                        </span>
+                                    </p>
+                                </div>
+                                <form th:action="@{/pedidos/{id}/cambiar-estado(id=${p.id})}" method="post">
+                                    <input type="hidden" name="estado" value="ENTREGADO" />
+                                    <button type="submit"
+                                        class="flex w-full mt-2 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-green-600 text-white text-sm font-bold leading-normal hover:bg-green-700 transition-colors">
+                                        <span class="truncate">Completar Pedido</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

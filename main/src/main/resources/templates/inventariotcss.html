@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout_tailwind :: layout(~{::content})}">
+
+<head>
+    <title>Gestión de Inventario - Tinkhec</title>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="flex flex-wrap justify-between gap-4 py-4 items-center">
+                <p
+                    class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">
+                    Gestión de Inventario</p>
+            </div>
+            <div
+                class="flex flex-col sm:flex-row justify-between gap-4 py-3 border-y border-slate-200 dark:border-white/10">
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="relative w-full sm:w-auto">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white/50 text-xl">
+                            search </span>
+                        <input
+                            class="h-10 w-full sm:w-64 rounded-lg bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white pl-10 pr-4 placeholder:text-slate-400 dark:placeholder:text-white/50 focus:border-primary focus:ring-primary/50 transition-colors"
+                            placeholder="Buscar producto..." type="text" />
+                    </div>
+                    <button
+                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-300 dark:border-white/10 transition-colors px-4">
+                        <p class="text-slate-700 dark:text-white text-sm font-medium leading-normal">Bajo Stock</p>
+                        <span class="material-symbols-outlined text-slate-500 dark:text-white/70 text-lg"> expand_more
+                        </span>
+                    </button>
+                    <button
+                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-300 dark:border-white/10 transition-colors px-4">
+                        <p class="text-slate-700 dark:text-white text-sm font-medium leading-normal">Por Categoría</p>
+                        <span class="material-symbols-outlined text-slate-500 dark:text-white/70 text-lg"> expand_more
+                        </span>
+                    </button>
+                </div>
+                <a href="/inventario/nuevo-css"
+                    class="flex w-full sm:w-auto cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-primary hover:bg-primary/90 text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-4 transition-colors">
+                    <span class="material-symbols-outlined text-white text-xl"
+                        style="font-variation-settings: 'FILL' 1;"> add </span>
+                    <span class="truncate">Añadir Producto</span>
+                </a>
+            </div>
+            <div class="py-3 @container">
+                <div
+                    class="flex overflow-hidden rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-transparent">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-white/5">
+                            <tr>
+                                <th
+                                    class="table-col-product px-4 py-3 text-left text-slate-900 dark:text-white w-[40%] text-sm font-medium leading-normal">
+                                    Producto</th>
+                                <th
+                                    class="table-col-sku px-4 py-3 text-left text-slate-900 dark:text-white w-[10%] text-sm font-medium leading-normal">
+                                    SKU (Ref)</th>
+                                <th
+                                    class="table-col-category px-4 py-3 text-left text-slate-900 dark:text-white w-[15%] text-sm font-medium leading-normal">
+                                    Categoría</th>
+                                <th
+                                    class="table-col-stock px-4 py-3 text-left text-slate-900 dark:text-white w-[15%] text-sm font-medium leading-normal">
+                                    Stock</th>
+                                <th
+                                    class="table-col-provider px-4 py-3 text-left text-slate-900 dark:text-white w-[10%] text-sm font-medium leading-normal">
+                                    Precio</th>
+                                <th
+                                    class="table-col-actions px-4 py-3 text-left text-slate-900 dark:text-white w-[10%] text-sm font-medium leading-normal">
+                                    Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${productos}"
+                                class="border-t border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                <td
+                                    class="table-col-product h-[72px] px-4 py-2 w-[40%] text-slate-900 dark:text-white text-sm font-normal leading-normal">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg w-10 bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                                            <span class="material-symbols-outlined">inventory_2</span>
+                                        </div>
+                                        <span th:text="${p.nombre}">Nombre Producto</span>
+                                    </div>
+                                </td>
+                                <td class="table-col-sku h-[72px] px-4 py-2 w-[10%] text-slate-500 dark:text-white/70 text-sm font-normal leading-normal"
+                                    th:text="'SKU-' + ${p.id}">SKU-1001</td>
+                                <td class="table-col-category h-[72px] px-4 py-2 w-[15%] text-slate-500 dark:text-white/70 text-sm font-normal leading-normal"
+                                    th:text="${p.categoria}">Categoría</td>
+                                <td
+                                    class="table-col-stock h-[72px] px-4 py-2 w-[15%] text-sm font-normal leading-normal">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-full max-w-[88px] overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                                            <div class="h-1.5 rounded-full"
+                                                th:classappend="${p.stock <= p.stockMinimo ? 'bg-red-500' : (p.stock < p.stockMinimo * 2 ? 'bg-yellow-500' : 'bg-green-500')}"
+                                                style="width: 100%;"></div>
+                                        </div>
+                                        <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal"
+                                            th:text="${p.stock} + ' und.'">80 und.</p>
+                                    </div>
+                                </td>
+                                <td class="table-col-provider h-[72px] px-4 py-2 w-[10%] text-slate-500 dark:text-white/70 text-sm font-normal leading-normal"
+                                    th:text="'$' + ${p.precio}">$10.00</td>
+                                <td
+                                    class="table-col-actions h-[72px] px-4 py-2 w-[10%] text-sm font-bold leading-normal tracking-[0.015em]">
+                                    <div class="flex items-center gap-2">
+                                        <a th:href="@{/inventario/{id}/editar-css(id=${p.id})}"
+                                            class="p-2 rounded-md hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-white/70 hover:text-primary dark:hover:text-white transition-colors">
+                                            <span class="material-symbols-outlined text-xl"> edit </span>
+                                        </a>
+                                        <form th:action="@{/inventario/{id}/eliminar-css(id=${p.id})}" method="post"
+                                            class="inline"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
+                                            <button type="submit"
+                                                class="p-2 rounded-md hover:bg-red-50 dark:hover:bg-white/10 text-slate-500 dark:text-white/70 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                                                <span class="material-symbols-outlined text-xl"> delete </span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <style>
+                    @container(max-width: 768px) {
+
+                        .table-col-sku,
+                        .table-col-provider {
+                            display: none;
+                        }
+                    }
+
+                    @container(max-width: 640px) {
+                        .table-col-category {
+                            display: none;
+                        }
+                    }
+                </style>
+            </div>
+            <div class="flex items-center justify-between py-4 border-t border-slate-200 dark:border-white/10">
+                <span class="text-sm text-slate-500 dark:text-white/50"
+                    th:text="'Mostrando ' + ${productos.size()} + ' productos'">Mostrando 20 productos</span>
+                <div class="flex items-center gap-2">
+                    <button
+                        class="flex items-center justify-center h-8 px-3 text-sm font-medium text-slate-700 dark:text-white bg-white dark:bg-white/5 rounded-md hover:bg-slate-50 dark:hover:bg-white/10 transition-colors border border-slate-300 dark:border-transparent">Anterior</button>
+                    <button
+                        class="flex items-center justify-center h-8 px-3 text-sm font-medium text-slate-700 dark:text-white bg-white dark:bg-white/5 rounded-md hover:bg-slate-50 dark:hover:bg-white/10 transition-colors border border-slate-300 dark:border-transparent">Siguiente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

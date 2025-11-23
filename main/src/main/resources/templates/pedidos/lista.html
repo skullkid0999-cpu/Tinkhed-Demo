@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="layout :: *">
+<head>
+    <title>Gestión de Pedidos - Sistema de Gestión de Restaurante</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="fas fa-shopping-cart me-2"></i>
+                Gestión de Pedidos
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/pedidos/nuevo" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Nuevo Pedido
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Filtrar por Estado:</label>
+                        <select class="form-select" onchange="filtrarPorEstado(this.value)">
+                            <option value="">Todos los estados</option>
+                            <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendiente</option>
+                            <option value="EN_PREPARACION" th:selected="${estadoFiltro == 'EN_PREPARACION'}">En Preparación</option>
+                            <option value="LISTO" th:selected="${estadoFiltro == 'LISTO'}">Listo</option>
+                            <option value="ENTREGADO" th:selected="${estadoFiltro == 'ENTREGADO'}">Entregado</option>
+                            <option value="CANCELADO" th:selected="${estadoFiltro == 'CANCELADO'}">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Buscar:</label>
+                        <input type="text" class="form-control" placeholder="Número de pedido o cliente..." id="busqueda">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                            <i class="fas fa-times me-1"></i>
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-list me-2"></i>
+                    Lista de Pedidos
+                    <span class="badge bg-primary ms-2" th:text="${#lists.size(pedidos)}">0</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(pedidos)}" class="text-center text-muted py-5">
+                    <i class="fas fa-inbox fa-4x mb-3"></i>
+                    <h5>No hay pedidos registrados</h5>
+                    <p>Comience creando su primer pedido</p>
+                    <a href="/pedidos/nuevo" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Crear Pedido
+                    </a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(pedidos)}" class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Número</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="pedido : ${pedidos}">
+                                <td>
+                                    <strong th:text="${pedido.numeroPedido}">PED-001</strong>
+                                </td>
+                                <td>
+                                    <div th:text="${pedido.clienteNombre}">Cliente</div>
+                                    <small class="text-muted" th:if="${pedido.clienteTelefono}" th:text="${pedido.clienteTelefono}">Teléfono</small>
+                                </td>
+                                <td>
+                                    <div th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy')}">Fecha</div>
+                                    <small class="text-muted" th:text="${#temporals.format(pedido.fechaCreacion, 'HH:mm')}">Hora</small>
+                                </td>
+                                <td>
+                                    <span th:class="${'badge bg-' + 
+                                        (pedido.estado == 'PENDIENTE' ? 'warning' : 
+                                         pedido.estado == 'EN_PREPARACION' ? 'info' : 
+                                         pedido.estado == 'LISTO' ? 'success' : 
+                                         pedido.estado == 'ENTREGADO' ? 'secondary' : 'danger')}"
+                                          th:text="${pedido.estado}">Estado</span>
+                                </td>
+                                <td>
+                                    <strong th:text="${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}">$0.00</strong>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/pedidos/{id}(id=${pedido.id})}" 
+                                           class="btn btn-sm btn-outline-primary btn-action" 
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/pedidos/{id}/editar(id=${pedido.id})}" 
+                                           class="btn btn-sm btn-outline-secondary btn-action" 
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger btn-action" 
+                                                th:onclick="'eliminarPedido(' + ${pedido.id} + ')'"
+                                                title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:fragment="scripts">
+        function filtrarPorEstado(estado) {
+            if (estado) {
+                window.location.href = '/pedidos/estado/' + estado;
+            } else {
+                window.location.href = '/pedidos';
+            }
+        }
+
+        function limpiarFiltros() {
+            window.location.href = '/pedidos';
+        }
+
+        function eliminarPedido(id) {
+            if (confirm('¿Está seguro de que desea eliminar este pedido?')) {
+                fetch('/pedidos/' + id + '/eliminar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar el pedido');
+                    }
+                });
+            }
+        }
+
+        // Búsqueda en tiempo real
+        document.getElementById('busqueda').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

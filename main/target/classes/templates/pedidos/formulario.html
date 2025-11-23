@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="layout :: *">
+<head>
+    <title th:text="${pedido.id} ? 'Editar Pedido' : 'Nuevo Pedido'">Nuevo Pedido</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="fas fa-shopping-cart me-2"></i>
+                <span th:text="${pedido.id} ? 'Editar Pedido' : 'Nuevo Pedido'">Nuevo Pedido</span>
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/pedidos" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Form -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-edit me-2"></i>
+                            Información del Pedido
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${pedido.id} ? @{/pedidos/{id}(id=${pedido.id})} : @{/pedidos}" 
+                              method="post" th:object="${pedido}">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="clienteNombre" class="form-label">Nombre del Cliente *</label>
+                                        <input type="text" class="form-control" id="clienteNombre" 
+                                               th:field="*{clienteNombre}" required>
+                                        <div class="text-danger small" th:if="${#fields.hasErrors('clienteNombre')}" 
+                                             th:errors="*{clienteNombre}"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="clienteTelefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="clienteTelefono" 
+                                               th:field="*{clienteTelefono}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="estado" class="form-label">Estado</label>
+                                        <select class="form-select" id="estado" th:field="*{estado}">
+                                            <option th:each="estado : ${estados}" 
+                                                    th:value="${estado.name()}" 
+                                                    th:text="${estado.name()}">Estado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="observaciones" class="form-label">Observaciones</label>
+                                        <textarea class="form-control" id="observaciones" 
+                                                  th:field="*{observaciones}" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>
+                                    <span th:text="${pedido.id} ? 'Actualizar' : 'Crear'">Crear</span> Pedido
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Resumen del Pedido
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${pedido.id}">
+                            <div class="mb-3">
+                                <strong>Número:</strong>
+                                <span th:text="${pedido.numeroPedido}">PED-001</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Fecha:</strong>
+                                <span th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Total:</strong>
+                            <span class="h5 text-success" th:text="${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>Los productos se pueden agregar después de crear el pedido</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

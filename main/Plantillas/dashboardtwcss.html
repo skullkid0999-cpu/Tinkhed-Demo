@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>QuickBite POS Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex min-h-screen w-full flex-col">
+<div class="flex h-full w-full flex-1">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col gap-8 border-r border-slate-200/10 bg-white/20 dark:bg-[#111722] p-4">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Logo for QuickBite POS, a blue abstract shape" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDHyn6B9BhdqlplVlj5I7xjqUMhRy7n5gXAozfsvkAGi8TvcQyQVelJ1BoKaohx7amzhDWkk1mxPSGPDAE0P2SpAjFoIlWMyqc791Qan8zBmeLtho7h3H0LSm0S6-8TQ7YLVchjO-wPFzPfd6fbf0SLHCsFi0SnEgtu6tMHhGzCGls9bOSrjLyHPmlIj1DdMAdS7AYOJmuDLYX0R5DIRywZdwcF2p47_xgxGpKi22c1YIZhh9BJQxhcefxY2olBP6PinMuzH7LUnE5P");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-medium leading-normal">QuickBite POS</h1>
+<p class="text-slate-500 dark:text-[#92a4c9] text-sm font-normal leading-normal">Restaurante Principal</p>
+</div>
+</div>
+<nav class="flex flex-1 flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 text-slate-700 dark:text-white" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Pedidos</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 text-slate-700 dark:text-white" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<p class="text-sm font-medium leading-normal">Inventario</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 text-slate-700 dark:text-white" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Personal</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 text-slate-700 dark:text-white" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<p class="text-sm font-medium leading-normal">Reportes</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 text-slate-700 dark:text-white" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Configuración</p>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex w-full flex-1 flex-col">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-b-[#232f48] px-10 py-3 bg-white/20 dark:bg-[#111722]/50 sticky top-0 backdrop-blur-sm z-10">
+<div class="flex items-center gap-8">
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Dashboard</h2>
+<label class="relative flex items-center min-w-40 max-w-64">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 dark:text-[#92a4c9]">search</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border border-slate-300 dark:border-none bg-white dark:bg-[#232f48] text-slate-900 dark:text-white h-10 placeholder:text-slate-400 dark:placeholder:text-[#92a4c9] pl-10 pr-4 text-base font-normal leading-normal focus:border-primary focus:ring-primary" placeholder="Buscar..." value=""/>
+</label>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-slate-100 dark:bg-[#232f48] text-slate-700 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQ2mFjnM0flvE_nbCliv75msKtJBk8EgkeHkQvTP4djlMEegDWlF8tihS_8pJqm4jW4WrCz9JHs5dJCYO-d4gh_rW_0wc08Z55IncAFdZaKLZ7Qe7CmJ-rz7cQHloikbQ7caN9K-2ARIQmvsH49xx6tq8G_mB28zH95yfunfWhS2YcZpr8jOI0nJo3WPNpJ5KCaaOf7l6lFz48BGMnf_iA5yJQEiUHiLotulRryLQV9wJdU88EpK62OAynyy1E0ElyzP70j8BUd3oZ");'></div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex flex-col gap-6 p-6">
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+<p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Ventas del Día</p>
+<p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight">$1,250.75</p>
+<p class="text-green-500 text-base font-medium leading-normal">+5.2%</p>
+</div>
+<div class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+<p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Pedidos Activos</p>
+<p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight">12</p>
+<p class="text-green-500 text-base font-medium leading-normal">+2</p>
+</div>
+<div class="flex flex-1 flex-col gap-2 rounded-xl bg-white dark:bg-[#192233] p-6 border border-slate-200 dark:border-[#324467]">
+<p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Total de Clientes Hoy</p>
+<p class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight">86</p>
+<p class="text-green-500 text-base font-medium leading-normal">+10%</p>
+</div>
+<div class="flex flex-1 items-center justify-center rounded-xl bg-primary hover:bg-primary/90 p-6 border border-primary/20 cursor-pointer">
+<div class="flex flex-col items-center gap-2 text-white">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+<p class="text-base font-semibold">Nuevo Pedido</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- Main section with charts and tables -->
+<div class="col-span-3 flex flex-col gap-6">
+<!-- Charts -->
+<div class="flex min-w-72 flex-1 flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233]">
+<p class="text-slate-700 dark:text-white text-base font-medium leading-normal">Ventas por Hora</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight truncate">$1,250.75</p>
+<div class="flex gap-1">
+<p class="text-slate-500 dark:text-[#92a4c9] text-base font-normal leading-normal">Hoy</p>
+<p class="text-green-500 text-base font-medium leading-normal">+5.2%</p>
+</div>
+</div>
+<div class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3 pt-4">
+<div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 70%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">10am</p>
+<div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 40%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">11am</p>
+<div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 70%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">12pm</p>
+<div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 40%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">1pm</p>
+<div class="bg-primary dark:bg-primary w-full rounded-t-md" style="height: 100%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">2pm</p>
+<div class="bg-primary/20 dark:bg-[#232f48] w-full rounded-t-md" style="height: 60%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">3pm</p>
+<div class="bg-primary dark:bg-primary w-full rounded-t-md" style="height: 100%;"></div>
+<p class="text-slate-500 dark:text-[#92a4c9] text-[13px] font-bold leading-normal tracking-[0.015em]">4pm</p>
+</div>
+</div>
+<!-- Table -->
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233]">
+<h3 class="text-slate-700 dark:text-white text-base font-medium leading-normal">Últimos Pedidos</h3>
+<div class="overflow-x-auto">
+<table class="w-full">
+<thead>
+<tr class="border-b border-slate-200 dark:border-b-[#324467]">
+<th class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">ID Pedido</th>
+<th class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">Cliente</th>
+<th class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">Estado</th>
+<th class="px-4 py-3 text-left text-slate-500 dark:text-white w-1/4 text-sm font-medium leading-normal">Total</th>
+<th class="px-4 py-3 text-left text-slate-500 dark:text-[#92a4c9] text-sm font-medium leading-normal">Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-slate-200 dark:border-b-[#324467]">
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">#86754</td>
+<td class="h-[72px] px-4 py-2 text-slate-800 dark:text-white text-sm font-normal leading-normal">Ana Torres</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full bg-yellow-100 dark:bg-yellow-500/20 px-3 py-1 text-xs font-medium text-yellow-800 dark:text-yellow-400">En Preparación</span>
+</td>
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">$25.50</td>
+<td class="h-[72px] px-4 py-2 text-primary dark:text-primary text-sm font-bold leading-normal tracking-[0.015em] cursor-pointer hover:underline">Ver Detalle</td>
+</tr>
+<tr class="border-b border-slate-200 dark:border-b-[#324467]">
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">#86753</td>
+<td class="h-[72px] px-4 py-2 text-slate-800 dark:text-white text-sm font-normal leading-normal">Carlos Gómez</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-500/20 px-3 py-1 text-xs font-medium text-blue-800 dark:text-blue-400">Listo</span>
+</td>
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">$15.00</td>
+<td class="h-[72px] px-4 py-2 text-primary dark:text-primary text-sm font-bold leading-normal tracking-[0.015em] cursor-pointer hover:underline">Ver Detalle</td>
+</tr>
+<tr class="border-b border-slate-200 dark:border-b-[#324467]">
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">#86752</td>
+<td class="h-[72px] px-4 py-2 text-slate-800 dark:text-white text-sm font-normal leading-normal">Luis Fernández</td>
+<td class="h-[72px] px-4 py-2 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-500/20 px-3 py-1 text-xs font-medium text-green-800 dark:text-green-400">Entregado</span>
+</td>
+<td class="h-[72px] px-4 py-2 text-slate-600 dark:text-[#92a4c9] text-sm font-normal leading-normal">$32.10</td>
+<td class="h-[72px] px-4 py-2 text-primary dark:text-primary text-sm font-bold leading-normal tracking-[0.015em] cursor-pointer hover:underline">Ver Detalle</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right sidebar/column for inventory -->
+<div class="col-span-3 lg:col-span-2 flex flex-col gap-6 rounded-xl border border-slate-200 dark:border-[#324467] p-6 bg-white dark:bg-[#192233] h-fit">
+<h3 class="text-slate-700 dark:text-white text-base font-medium leading-normal">Inventario Bajo</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-100/50 dark:bg-slate-500/10">
+<div class="flex flex-col">
+<p class="text-slate-800 dark:text-white font-medium">Carne de Hamburguesa</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Quedan 12 unidades</p>
+</div>
+<div class="px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-500/20">
+<p class="text-xs font-semibold text-red-600 dark:text-red-400">Bajo</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-100/50 dark:bg-slate-500/10">
+<div class="flex flex-col">
+<p class="text-slate-800 dark:text-white font-medium">Queso Cheddar</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Quedan 8 unidades</p>
+</div>
+<div class="px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-500/20">
+<p class="text-xs font-semibold text-red-600 dark:text-red-400">Bajo</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-100/50 dark:bg-slate-500/10">
+<div class="flex flex-col">
+<p class="text-slate-800 dark:text-white font-medium">Papas Fritas (Bolsa)</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Quedan 21 unidades</p>
+</div>
+<div class="px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-500/20">
+<p class="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Advertencia</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-slate-100/50 dark:bg-slate-500/10">
+<div class="flex flex-col">
+<p class="text-slate-800 dark:text-white font-medium">Bebida Cola (Litro)</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Quedan 35 unidades</p>
+</div>
+<div class="px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-500/20">
+<p class="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Advertencia</p>
+</div>
+</div>
+<button class="mt-2 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-slate-200 dark:bg-[#232f48] text-slate-700 dark:text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]">
+<span>Ver Inventario Completo</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
