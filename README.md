@@ -1,1 +1,1 @@
-# Tinkhed-Demo
+# Tinkhec-Demo
